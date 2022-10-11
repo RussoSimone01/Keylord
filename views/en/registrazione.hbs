@@ -1,0 +1,79 @@
+<header class="w3-center">
+	<h1 class="black-yellow"><b>KeyLord</b></h1>
+	Your data are so safe that even we can't see or recover them in any way, therefore the only thing we ask you is to remember our password
+</header>
+{{#if error}}
+	<div id="errore" class="w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other" style="width:300px;">
+		<span onclick="document.getElementById('errore').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+		<h3><i class="fas fa-exclamation-triangle"></i> ERROR</h3>
+		<span>Username already taken</span>
+	</div>
+{{else if email}}
+	<div id="errore" class="w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other" style="width:300px;">
+		<span onclick="document.getElementById('errore').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+		<h3><i class="fas fa-exclamation-triangle"></i> ERROR</h3>
+		<span>Email already taken</span>
+	</div>
+{{/if}}
+<br>
+<div id="diverse" class="w3-modal">
+	<div class="w3-modal-content w3-animate-zoom">
+		<div class="w3-container w3-red w3-text-black w3-center w3-xlarge">
+			<span onclick="document.getElementById('diverse').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+			<i class="fas fa-exclamation-triangle"></i> ERROR
+			<p>The passwords don't match</p>
+		</div>
+	</div>
+</div>
+<div class="w3-container" style="width: 350px; margin: auto;">
+	<fieldset class="w3-card w3-border-black">
+		<legend class="w3-xxlarge w3-center"><b>REGISTRATION</b></legend>
+		<form action='/en/registration' method='post' class="w3-container black-yellow" onsubmit="return uguali();">
+			<div class="w3-panel">
+				<label><i class="fas fa-user"></i> Username</label>
+				<input type='text' name='nome' class="w3-input w3-border yellow-black" required autofocus title="Insert a username" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Insert a username')" />
+				<span class="w3-medium" title="This will be your identifier, no one will have the same as yours"></span>
+			</div>
+			<div class="w3-panel">
+				<label><i class="fas fa-at"></i> Email</label>
+				<input type='email' name='email' class="w3-input w3-border yellow-black" required title="Insert your email" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Insert an email')" />
+				<span class="w3-medium" title="L'email servirà a riconoscerti in caso di blocco dell'account"></span>
+			</div>
+			<div class="w3-panel">
+				<label><i class="fas fa-lock"></i> Password</label>
+				<input type='password' name='pwd' id="pwd1" class="w3-input w3-border yellow-black" required pattern=".{8,255}" title="Inserirt a password" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Inserirt a password')" />
+				<span class="w3-medium" title="Just remember this password and we will safeguard all the others for you"></span>
+			</div>
+			<div class="w3-panel">
+				<label><i class="fas fa-shield-alt"></i> Confirm password</label>
+				<input type='password' id="pwd2" class="w3-input w3-border yellow-black" required title="Repeat the password" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Repeat the password')" />
+				<span class="w3-medium" title="We are checking that you have inserted the right password you wanted"></span>
+			</div>
+			<div class="w3-panel">
+				<input type="submit" class="w3-btn w3-block yellow-black" style="position:relative;" name="Invia" value="ENROL NOW!">
+			</div>
+		</form>
+	</fieldset>
+</div>
+<footer class="w3-center yellow-black">
+	<p class="w3-xlarge">Registered yet?<br><a href="/en/login">SIGN IN NOW!</a></p>
+	<p class="w3-padding w3-bottom" style="position: relative;"><a href="/it/registrazione">Versione ITALIANA</a></p>
+</footer>
+<script>
+
+	function uguali() {
+		p1 = document.getElementById("pwd1").value;
+		p2 = document.getElementById("pwd2").value;
+		if (p1 == p2)
+			return true;
+		else {
+			document.getElementById('diverse').style.display = 'block';
+			return false;
+		}
+	}
+
+	window.onclick = function (event) {
+		if (event.target == document.getElementById('diverse'))
+			document.getElementById('diverse').style.display = "none";
+	}
+</script>

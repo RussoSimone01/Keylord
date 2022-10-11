@@ -1,0 +1,79 @@
+<header class="w3-center">
+	<h1 class="black-yellow"><b>KeyLord</b></h1>
+	I tuoi dati sono così al sicuro che neanche noi possiamo vederli o recuperarli, pertanto l'unica cosa che ti chiediamo è di ricordare la nostra password
+</header>
+{{#if error}}
+	<div id="errore" class="w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other" style="width:300px;">
+		<span onclick="document.getElementById('errore').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+		<h3><i class="fas fa-exclamation-triangle"></i> ERRORE</h3>
+		<span>Nome utente già in uso</span>
+	</div>
+{{else if email}}
+	<div id="errore" class="w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other" style="width:300px;">
+		<span onclick="document.getElementById('errore').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+		<h3><i class="fas fa-exclamation-triangle"></i> ERRORE</h3>
+		<span>Email già in uso</span>
+	</div>
+{{/if}}
+<br>
+<div id="diverse" class="w3-modal">
+	<div class="w3-modal-content w3-animate-zoom">
+		<div class="w3-container w3-red w3-text-black w3-center w3-xlarge">
+			<span onclick="document.getElementById('diverse').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+			<i class="fas fa-exclamation-triangle"></i> ERRORE
+			<p>Le password non corrispondono</p>
+		</div>
+	</div>
+</div>
+<div class="w3-container" style="width: 350px; margin: auto;">
+	<fieldset class="w3-card w3-border-black">
+		<legend class="w3-xxlarge w3-center"><b>REGISTRAZIONE</b></legend>
+		<form action='/it/registrazione' method='post' class="w3-container black-yellow" onsubmit="return uguali();">
+			<div class="w3-panel">
+				<label><i class="fas fa-user"></i> Nome utente</label>
+				<input type='text' name='nome' class="w3-input w3-border yellow-black" required autofocus title="Inserire un nome utente" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Inserire un nome utente')" />
+				<span class="w3-medium" title="Questo sarà il tuo identificativo, nessuno potrà averlo uguale a te"></span>
+			</div>
+			<div class="w3-panel">
+				<label><i class="fas fa-at"></i> Email</label>
+				<input type='email' name='email' class="w3-input w3-border yellow-black" required title="Inserire la propria email" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Inserire un\'email')" />
+				<span class="w3-medium" title="L'email servirà a riconoscerti in caso di blocco dell'account"></span>
+			</div>
+			<div class="w3-panel">
+				<label><i class="fas fa-lock"></i> Password</label>
+				<input type='password' name='pwd' id="pwd1" class="w3-input w3-border yellow-black" required pattern=".{8,255}" title="Inserire una password" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('La password deve essere lunga almeno 8 caratteri')" />
+				<span class="w3-medium" title="Ricorda solo questa password e noi custodiremo tutte le altre per te"></span>
+			</div>
+			<div class="w3-panel">
+				<label><i class="fas fa-shield-alt"></i> Conferma password</label>
+				<input type='password' id="pwd2" class="w3-input w3-border yellow-black" required title="Ripetere la password" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Ripetere la password')" />
+				<span class="w3-medium" title="Controlliamo che tu abbia inserito proprio la password che volevi"></span>
+			</div>
+			<div class="w3-panel">
+				<input type="submit" class="w3-btn w3-block yellow-black" style="position:relative;" name="Invia" value="REGISTRATI ORA!">
+			</div>
+		</form>
+	</fieldset>
+</div>
+<footer class="w3-center yellow-black">
+	<p class="w3-xlarge">Già registrato?<br><a href="/it/login">ACCEDI SUBITO!</a></p>
+	<p class="w3-padding w3-bottom" style="position: relative;"><a href="/en/registration">ENGLISH Version</a></p>
+</footer>
+<script>
+
+	function uguali() {
+		p1 = document.getElementById("pwd1").value;
+		p2 = document.getElementById("pwd2").value;
+		if (p1 == p2)
+			return true;
+		else {
+			document.getElementById('diverse').style.display = 'block';
+			return false;
+		}
+	}
+
+	window.onclick = function (event) {
+		if (event.target == document.getElementById('diverse'))
+			document.getElementById('diverse').style.display = "none";
+	}
+</script>

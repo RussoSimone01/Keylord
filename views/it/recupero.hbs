@@ -1,0 +1,116 @@
+<header class="w3-center">
+    <h1 class="black-yellow">KeyLord</h1>
+    Un'unico posto per tutte le tue password
+</header>
+<script>
+    function uguali() {
+        p1 = document.getElementById("pwd1").value;
+        p2 = document.getElementById("pwd2").value;
+        if (p1 == p2)
+            return true;
+        else {
+            document.getElementById('diverse').style.display = 'block';
+            return false;
+        }
+    }
+</script>
+
+{{#if invia}}
+    {{#if invia.continua}}
+        {{#if noUser}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> ERRORE</h3>
+                <span>Nome utente inesistente</span>
+            </div>
+        {{else if noPin}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> ERRORE</h3>
+                <span>Nessun PIN assegnato all'utente</span>
+            </div>
+        {{else if lock}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> ERRORE</h3>
+                <span>PIN bloccato: rivolgersi a assistenza@keylord.it per richiedere la riattivazione {{#if tentaPwd}}del PIN{{else}}dell'account{{/if}}</span>
+            </div>
+        {{else if error}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> ERRORE</h3>
+                <span>PIN errato<br>{{tentaPin}} tentativi rimanenti</span>
+            </div>
+        {{/if}}
+    {{else if invia.conferma}}
+        {{#if same}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> ERRORE</h3>
+                <span>La nuova password non può essere uguale a quella vecchia</span>
+            </div>
+        {{else}}
+            <div class="w3-panel w3-green w3-text-black w3-center other" style="width:400px; margin: auto;">
+                <p>
+                    La password è stata aggiornata correttamente!<br>
+                    <a class="w3-btn w3-white w3-text-green" href="/it/index">Torna al Login <i class="fas fa-undo-alt"></i></a>
+                </p>
+            </div>
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{#if noSessionUserPin}}
+    <div class="w3-container w3-padding" style="width:400px; margin: auto;">
+        <fieldset class="w3-card w3-border-black">
+            <legend class="w3-xxlarge w3-center"><b>RECUPERO PASSWORD</b></legend>
+            <form class="w3-container black-yellow" action="/it/recupero" method="post">
+                <div class="w3-panel">
+                    <label><i class="fas fa-user"></i> NOME UTENTE</label>
+                    <input type="text" class="w3-input w3-border yellow-black" name="User" required autofocus title="Inserire il nome utente" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Inserire il nome utente')">
+                </div>
+                <div class="w3-panel">
+                    <label><i class="fas fa-lock"></i> PIN</label>
+                    <input type="password" class="w3-input w3-border yellow-black" name="Pin" required pattern="[0-9]{4,12}" title="Inserire il PIN" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Inserire il PIN')">
+                    <div>Assicurarsi di aver impostato un PIN per il recupero, in caso contrario non sarà possibile resettare la password</div>
+                </div>
+                <div class="w3-panel w3-padding">
+                    <input type="submit" value="CONTINUA" class="w3-btn w3-block yellow-black" name="Invia">
+                </div>
+            </form>
+        </fieldset>
+    </div>
+{{else}}
+    <div id="diverse" class="w3-modal">
+        <div class="w3-modal-content w3-animate-zoom">
+            <div class="w3-container w3-red w3-text-black w3-center w3-xlarge">
+                <span onclick="document.getElementById('diverse').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                <i class="fas fa-exclamation-triangle"></i> ERRORE
+                <p>Le password non corrispondono</p>
+            </div>
+        </div>
+    </div>
+    <div class="w3-container w3-padding" style="width:400px; margin: auto;">
+        <fieldset class="w3-card w3-border-black">
+            <legend class="w3-xxlarge w3-center"><b>RECUPERO PASSWORD</b></legend>
+            <form class="w3-container black-yellow" action="/it/recupero" method="post" onsubmit="return uguali();">
+                <div class="w3-panel">
+                    <label><i class="fas fa-check"></i> Nuova password</label>
+                    <input type='password' name='newpwd' id='pwd1' class="w3-input w3-border yellow-black" pattern=".{8,255}" required autofocus />
+                </div>
+                <div class="w3-panel">
+                    <label><i class="fas fa-check-double"></i> Ripeti la nuova password</label>
+                    <input type='password' id='pwd2' class="w3-input w3-border yellow-black" pattern=".{8,255}" required />
+                </div>
+                <div class="w3-panel w3-padding">
+                    <input type="submit" value="CONFERMA" class="w3-btn w3-block yellow-black" name="Invia">
+                </div>
+            </form>
+        </fieldset>
+    </div>
+{{/if}}
+
+<footer class="yellow-black w3-center">
+    <p class="w3-xlarge"><a href="/it/login">Torna al login</a></p>
+    <p class="w3-padding w3-bottom" style="position: relative;"><a href="/it/recupero">ENGLISH Version</a></p>
+</footer>

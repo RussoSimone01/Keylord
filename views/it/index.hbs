@@ -1,0 +1,147 @@
+<header>
+    <div class='w3-bar w3-center black-yellow'>
+        <a class='w3-bar-item w3-btn w3-mobile' href='/en/index'>ENGLISH Version</a>
+        <a class='w3-bar-item w3-btn w3-mobile' href='/it/random'>GENERATORE DI PASSWORD</a>
+        <div class='w3-bar-item w3-mobile'>
+            <i style='padding-left: 20px;'>Dimentica pure le tue password, ci pensiamo noi a ricordarle per te.</i>
+        </div>
+        <div class='w3-right' style='display: table;'>
+            <div class='w3-padding w3-mobile' style='float: left; position:relative;'>Accesso eseguito come: {{user}}</div>
+            <a href='/it/gestione' class='w3-btn w3-mobile' style='height: 45px; float: left; position:relative;'>GESTIONE ACCOUNT <i class='fas fa-user-edit'></i></a>
+            <a class='w3-bar-item w3-button w3-red w3-text-black w3-hover-black w3-hover-text-red w3-border w3-border-red w3-mobile' href='/it/login'>LOGOUT <i class='fas fa-sign-out-alt'></i></a>
+        </div>
+    </div>
+</header>
+<br>
+{{!visualizzazione messaggio relativo alla buona o cattiva riuscita delle varie operazioni}}
+{{#if msg}}
+    <div id='msg' class='w3-modal-content w3-animate-zoom' style='width: 500px;'>
+        {{#if msg.errore}}
+            <div class='w3-container w3-red w3-text-black w3-center w3-xlarge'>
+        {{else}}
+            <div class='w3-container w3-green w3-text-black w3-center w3-xlarge'>
+        {{/if}}
+
+        <span onclick='document.getElementById("msg").style.display="none"' class='w3-button w3-display-topright'>&times;</span>
+
+        {{#if msg.inserisci}}
+            <p><i class='fas fa-check-circle'></i> Dati aggiunti correttamente</p>
+        {{else if msg.modifica}}
+            <p><i class='fas fa-check-circle'></i> Dati modificati correttamente</p>
+        {{else if msg.elimina}}
+            <p><i class='fas fa-check-circle'></i> Dati eliminati correttamente</p>
+        {{else if msg.errore}}
+            <i class='fas fa-exclamation-triangle'></i> ERRORE
+            <p>Impossibile aggiornare il database</p>
+        {{/if}}
+    </div>
+    </div>
+{{/if}}
+<div class='w3-container' style='width: 350px; margin: auto;'>
+    <fieldset class='w3-card w3-border-black'>
+        <legend class='w3-large w3-center'><b>INSERISCI I DATI DA SALVARE</b></legend>
+        <form action='/it/index' method='post' class='w3-container black-yellow'>
+            <input type='hidden' name='_csrf' value='{{csfrToken}}'>
+            <input type='hidden' name='id' id='id'>
+            <div class='w3-panel'>
+                <label><i class='fas fa-laptop-house'></i> Sito/App</label>
+                <input type='text' name='sito' id='sito' class='w3-input w3-border w3-border-black yellow-black' required autofocus />
+            </div>
+            <div class='w3-panel'>
+                <label><i class='fas fa-user'></i> Username</label>
+                <input type='text' name='user' id='user' class='w3-input w3-border w3-border-black yellow-black' required autofocus />
+            </div>
+            <div class='w3-panel'>
+                <label><i class='fas fa-key'></i> Password</label>
+                <div class='w3-cell-row yellow-black'>
+                    <span class='w3-cell'><input type='password' name='pwd' id='pwd' class='w3-input w3-cell w3-border w3-border-black yellow-black' required /></span>
+                    <span class='w3-cell'><i class='fas fa-eye icon' style='margin-left: 5px; margin-right: 5px;' id='icona' onclick="showhide(this, 'pwd');"></i></span>
+                </div>
+            </div>
+            <div class='w3-panel w3-cell-row w3-center'>
+                <input type='reset' class='w3-btn w3-cell w3-left yellow-black' style='width: 49%;' value='CANCELLA' onclick='annulla();'>
+                <input type='submit' class='w3-btn w3-cell w3-right yellow-black' style='width: 49%;' name='Invia' id='btn' value='INSERISCI'>
+            </div>
+        </form>
+    </fieldset>
+</div>
+
+<br>
+<h1 class='w3-center w3-xxlarge yellow-black'><b>I TUOI DATI</b></h1>
+<div class='w3-container' style='overflow-x:auto;'>
+    {{#if dati}}
+        <div class='w3-container'>
+            <input type="text" class='w3-input yellow-black' id="searchbar" oninput="w3.filterHTML('#table', '.item', this.value)" placeholder="Cerca tra i dati">
+        </div>
+        <br>
+        <table id='table' class='w3-card w3-table w3-border w3-bordered w3-border-yellow w3-responsive' style='display: table;'>
+            <tr class='w3-border-yellow' style='position: sticky;'>
+                <th style='width:27%; min-width:300px;'>SITO/APP</th>
+                <th style='width:27%; min-width:300px;'>USERNAME</th>
+                <th style='width:27%; min-width:300px;'>PASSWORD</th>
+                <th style='width:19%; min-width:250px;'></th>
+            </tr>
+            {{#each dati}}
+                <tr class='yellow-black w3-border-yellow w3-hover-border-black item'>
+                    <td id='{{this.ID}}s' style='width:27%; min-width:300px; height:50px;'>{{this.SitoApp}}</td>
+                    <td id='{{this.ID}}u' style='width:27%; min-width:300px; height:50px;'>{{this.Username}}</td>
+                    <td style='width:27%; min-width:350px; height:50px;'>
+                        <div class='w3-cell-row'>
+                            <div class='w3-cell'><input type='password' id='{{this.ID}}p' style='min-width:300px; height: 30px;' class='w3-input w3-border w3-border-black yellow-black' value='{{this.Password}}' readonly /></div>
+                            <div class='w3-cell'><i class='fas fa-eye icon w3-xlarge' style="margin-left:10px;" onclick="showhide(this,'{{this.ID}}p');"></i></div>
+                        </div>
+                    </td>
+                    <td class='w3-cell-row' style='width: 19%; min-width:250px; padding:5px; min-height:50px;'>
+                        <form action='/it/index' method='post' style='margin:0px; padding:0px;'>
+                            <input type='hidden' name='_csrf' value='{{csfrToken}}'>
+                            <button type='button' id='{{this.ID}}' onclick='modifica(this.id);' class='w3-btn w3-mobile w3-cell w3-border w3-border-black black-yellow' style='width: 49%; min-width:120px;'><i class='fas fa-edit'></i> MODIFICA</button>
+                            <button type='submit' name='Invia' value='ELIMINA' class='w3-btn w3-mobile w3-cell w3-border w3-border-black black-yellow' style='width: 49%; min-width:120px;'><i class='fas fa-trash-alt'></i> ELIMINA</button>
+                            <input type='hidden' name='id' value='{{this.ID}}'>
+                        </form>
+                    </td>
+                </tr>
+            {{/each}}
+        </table>
+    {{else}}
+        <div class='w3-center'>Non hai ancora salvato nulla, appena salverai qualcosa comparirà qui<div>
+    {{/if}}
+</div>
+<script src="https://www.w3schools.com/lib/w3.js"></script>
+<script>
+    function modifica(i) {
+        var s = document.getElementById(i + 's').innerHTML;
+        var u = document.getElementById(i + 'u').innerHTML;
+        var p = document.getElementById(i + 'p').value;
+        document.getElementById('sito').value = s;
+        document.getElementById('user').value = u;
+        document.getElementById('pwd').value = p;
+        document.getElementById('id').value = i;
+        document.getElementById('btn').value = 'MODIFICA';
+    }
+
+    function annulla() {
+        document.getElementById('sito').value = '';
+        document.getElementById('user').value = '';
+        document.getElementById('pwd').value = '';
+        document.getElementById('id').value = '';
+        document.getElementById('btn').value = 'INSERISCI';
+    }
+
+    window.onclick = function (event) {
+        if (event.target == document.getElementById('msg'))
+            document.getElementById('msg').style.display = 'none';
+    }
+
+    function showhide(icon, target) {
+        var x = document.getElementById(target);
+        if (x.type === 'password') {
+            x.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            x.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+</script>

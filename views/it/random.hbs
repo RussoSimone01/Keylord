@@ -1,0 +1,216 @@
+<header>
+    <div class="w3-bar w3-center black-yellow">
+        <a class="w3-bar-item w3-btn w3-mobile" href="/en/random">ENGLISH Version</a>
+        <div class="w3-right" style="display: table;">
+            <div class="w3-padding w3-mobile" style="float: left; position:relative;">Accesso eseguito come: {{user}}</div>
+            <a href="/it/gestione" class="w3-btn w3-mobile" style="height: 45px; float: left; position:relative;">GESTIONE ACCOUNT <i class="fas fa-user-edit"></i></a>
+            <a class="w3-bar-item w3-button w3-border w3-border-black w3-mobile" href='/it/index'>Torna alla home <i class="fas fa-home"></i></a>
+            <a class="w3-bar-item w3-button w3-red w3-text-black w3-hover-black w3-hover-text-red w3-border w3-border-red w3-mobile" href='/it/login'>LOGOUT <i class="fas fa-sign-out-alt"></i></a>
+        </div>
+    </div>
+    <h1 class="w3-center w3-xxlarge yellow-black"><b>GENERATORE DI PASSWORD</b></h1>
+</header>
+<br>
+<div class="w3-container" style="width: 400px; margin: auto;">
+    <div class="w3-row">
+        <button class="w3-btn w3-half w3-left  yellow-black" style="width: 49%;" onclick="tab('generator');"><i class="fas fa-plus-square"></i> GENERATORE</button>
+        <button class="w3-btn w3-half w3-right yellow-black" style="width: 49%;" onclick="tab('tester');"><i class="fas fa-spell-check"></i> TESTER</button>
+    </div>
+    <fieldset class="w3-card w3-border-black">
+        <div class="w3-container black-yellow" id="generator">
+            <div class="w3-panel">
+                <div id="complexity" class="w3-center"></div>
+                <input type='text' id='pwd' class="w3-input w3-border w3-border-black yellow-black" placeholder="Password" readonly />
+            </div>
+            <div class="w3-center w3-cell-row">
+                <div class="w3-cell">
+                    <input type="radio" name="type" value="pwd" onchange="cambia(this);" class="w3-radio yellow-black" checked>
+                    <label>PASSWORD</label>
+                </div>
+                <div class="w3-cell">
+                    <input type="radio" name="type" value="pin" onchange="cambia(this);" class="w3-radio yellow-black">
+                    <label>PIN</label>
+                </div>
+            </div>
+            <div class="w3-panel">
+                <div class="w3-cell-row">
+                    <label for="len" class="w3-cell" style="width:100px;">Lunghezza: </label>
+                    <input type="number" id="len" value="16" min="8" max="128" step="1" onchange="check(this);" style="padding:0px; text-align:center; width:50px;" class="w3-input yellow-black w3-cell">
+                </div>
+                <input class="w3-check" type="checkbox" checked="checked" id="minuscole" onclick="selezione(this);">
+                <label for="minuscole">Includi lettere minuscole</label>
+                <br>
+                <input class="w3-check" type="checkbox" checked="checked" id="maiuscole" onclick="selezione(this);">
+                <label for="maiuscole">Includi lettere maiuscole</label>
+                <br>
+                <input class="w3-check" type="checkbox" checked="checked" id="spazio" onclick="selezione(this);">
+                <label for="spazio">Includi gli spazi</label>
+                <br>
+                <input class="w3-check" type="checkbox" checked="checked" id="numeri" onclick="selezione(this);">
+                <label for="numeri">Includi numeri</label>
+                <br>
+                <input class="w3-check" type="checkbox" checked="checked" id="speciali" onclick="selezione(this);">
+                <label for="speciali">Includi caratteri speciali</label>
+                <br>
+                <input class="w3-check" type="checkbox" id="ltgt" onclick="selezione(this);">
+                <label for="ltgt">Escludi i caratteri <i style="font-family: Arial, Helvetica, sans-serif;">&lt;</i> e <i style="font-family: Arial, Helvetica, sans-serif;">&gt;</i></label>
+            </div>
+            <div class="w3-panel w3-cell-row w3-center">
+                <button class="w3-btn w3-cell w3-left yellow-black" style="width: 49%;" onclick="copia();"><i class="fas fa-copy"></i> COPIA</button>
+                <button class="w3-btn w3-cell w3-right yellow-black" style="width: 49%;" onclick="genera();"><i class="fas fa-sync-alt"></i> GENERA</button>
+            </div>
+        </div>
+        <div class="w3-container black-yellow" id="tester" hidden>
+            <div class="w3-panel">
+                <div id="complexity2" class="w3-center"></div>
+                <input type='text' id='pwd2' class="w3-input w3-border w3-border-black yellow-black" placeholder="La tua password" />
+            </div>
+            <div class="w3-panel">
+                <button class="w3-btn w3-block yellow-black" onclick="document.getElementById('complexity2').innerHTML = chkPass(document.getElementById('pwd2').value, 'it');">CONTROLLA</button>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+<script type="text/javascript" src="/javascripts/pwdmeter.js" language="javascript"></script>
+<script>
+    var tipo = "it";
+
+    window.onclick = function (event) {
+        if (event.target == document.getElementById('msg'))
+            document.getElementById('msg').style.display = "none";
+    }
+
+    function genera() {
+        var len = document.getElementById("len").value;
+        var maiuscola = document.getElementById("maiuscole").checked;
+        var minuscola = document.getElementById("minuscole").checked;
+        var spazio = document.getElementById("spazio").checked;
+        var numero = document.getElementById("numeri").checked;
+        var speciale = document.getElementById("speciali").checked;
+        var maggmin = document.getElementById("ltgt").checked;
+
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+            xmlhttp = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        } else {
+            document.getElementById("pwd").value = "Versione del browser troppo datata: impossibile creare una connessione AJAX";
+        }
+
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("pwd").value = this.responseText;
+                if (tipo != "pin")
+                    document.getElementById("complexity").innerHTML = chkPass(this.responseText, tipo);
+                else
+                    document.getElementById("complexity").innerHTML = "";
+            }
+        };
+        xmlhttp.open("POST", "/generatore", true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.send("len=" + len + "&cap=" + maiuscola + "&low=" + minuscola + "&space=" + spazio + "&num=" + numero + "&spec=" + speciale + "&tag=" + maggmin);
+    }
+
+
+    function check(number) {
+        var num = number.value;
+        if (num < 4)
+            number.value = 4;
+        else if (num > 255)
+            number.value = 255;
+    }
+
+    function copia() {
+        /* Get the text field */
+        var copyText = document.getElementById("pwd");
+
+        /* Select the text field */
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+    }
+
+    function selezione(element) {
+        var maiuscola = document.getElementById("maiuscole").checked;
+        var minuscola = document.getElementById("minuscole").checked;
+        var spazio = document.getElementById("spazio").checked;
+        var numero = document.getElementById("numeri").checked;
+        var speciale = document.getElementById("speciali").checked;
+        var maggmin = document.getElementById("ltgt");
+
+        if (!(maiuscola || minuscola || numero || speciale))
+            element.checked = "checked";
+
+        if (element.id == "speciali") {
+            if (element.checked)
+                maggmin.disabled = false;
+            else {
+                maggmin.disabled = true;
+                maggmin.checked = false;
+            }
+        }
+    }
+
+    function cambia(radio) {
+        if (radio.value == "pwd") {
+            tipo = "it";
+
+            document.getElementById("maiuscole").disabled = false;
+            document.getElementById("minuscole").disabled = false;
+            document.getElementById("spazio").disabled = false;
+            document.getElementById("numeri").disabled = false;
+            document.getElementById("speciali").disabled = false;
+            document.getElementById("ltgt").disabled = false;
+
+            document.getElementById("maiuscole").checked = true;
+            document.getElementById("minuscole").checked = true;
+            document.getElementById("spazio").checked = true;
+            document.getElementById("numeri").checked = true;
+            document.getElementById("speciali").checked = true;
+            document.getElementById("ltgt").checked = false;
+
+            var len = document.getElementById("len");
+            len.value = 16;
+            len.min = 8;
+            len.max = 128;
+        }
+        else if (radio.value == "pin") {
+            tipo = "pin";
+
+            document.getElementById("maiuscole").disabled = true;
+            document.getElementById("minuscole").disabled = true;
+            document.getElementById("spazio").disabled = true;
+            document.getElementById("numeri").disabled = true;
+            document.getElementById("speciali").disabled = true;
+            document.getElementById("ltgt").disabled = true;
+
+            document.getElementById("maiuscole").checked = false;
+            document.getElementById("minuscole").checked = false;
+            document.getElementById("spazio").checked = false;
+            document.getElementById("numeri").checked = true;
+            document.getElementById("speciali").checked = false;
+            document.getElementById("ltgt").checked = false;
+
+            var len = document.getElementById("len");
+            len.value = 4;
+            len.min = 4;
+            len.max = 12;
+
+        }
+    }
+
+    function tab(who) {
+        if (who == "generator") {
+            document.getElementById("generator").hidden = false;
+            document.getElementById("tester").hidden = true;
+        }
+        else if (who == "tester") {
+            document.getElementById("generator").hidden = true;
+            document.getElementById("tester").hidden = false;
+        }
+    }
+</script>

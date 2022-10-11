@@ -1,0 +1,436 @@
+<header>
+    <div class='w3-bar w3-center black-yellow'>
+        <a class='w3-bar-item w3-btn w3-mobile' href='/en/management'>ENGLISH Version</a>
+        <a class='w3-bar-item w3-btn w3-mobile' href='/it/random'>GENERATORE DI PASSWORD</a>
+        <div class='w3-right' style='display: table;'>
+            <div class='w3-padding w3-mobile' style='float: left; position:relative;'>Accesso eseguito come: {{user}}</div>
+            <a href='/it/gestione' class='w3-btn w3-mobile' style='height: 45px; float: left; position:relative;'>GESTIONE ACCOUNT <i class='fas fa-user-edit'></i></a>
+            <a class='w3-bar-item w3-button w3-border w3-border-black w3-mobile' href='/it/index'>Torna alla home <i class='fas fa-home'></i></a>
+            <a class='w3-bar-item w3-button w3-red w3-text-black w3-hover-black w3-hover-text-red w3-border w3-border-red w3-mobile' href='/it/login'>LOGOUT <i class='fas fa-sign-out-alt'></i></a>
+        </div>
+    </div>
+    <h1 class='w3-center w3-xxlarge yellow-black'><b>GESTIONE ACCOUNT</b></h1>
+</header>
+<br>
+{{#if azione}}
+    {{#if azione.cambia}}
+        {{#if error}}
+            <div id='errore' class='w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other' style='width:300px;'>
+                <span onclick="document.getElementById('errore').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+                <span>La vecchia password non corrisponde</span>
+            </div>
+        {{else if same}}
+            <div id='same' class='w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other' style='width:300px;'>
+                <span onclick="document.getElementById('same').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+                <span>La nuova password non può essere uguale a quella vecchia</span>
+            </div>
+        {{else if post}}
+            <div class='w3-panel w3-green w3-text-black w3-center other' style='width:400px; margin: auto;'>
+                <p>
+                    La password è stata aggiornata correttamente!<br>
+                    <a class='w3-btn w3-white w3-text-green' href='/it/index'>Torna alla Home <i class='fas fa-undo-alt'></i></a>
+                </p>
+            </div>
+        {{/if}}
+        <br>
+        <div id='diverse' class='w3-modal'>
+            <div class='w3-modal-content w3-animate-zoom'>
+                <div class='w3-container w3-red w3-text-black w3-center w3-xlarge'>
+                    <span onclick="document.getElementById('diverse').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                    <i class='fas fa-exclamation-triangle'></i> ERRORE
+                    <p>Le password non corrispondono</p>
+                </div>
+            </div>
+        </div>
+        <div class='w3-container' style='width: 350px; margin: auto;'>
+            <fieldset class='w3-card w3-border-black'>
+                <legend class='w3-large w3-center'><b>MODIFICA PASSWORD</b></legend>
+                <form action='/it/gestione/cambia' method='post' class='w3-container black-yellow' onsubmit='return uguali();'>
+                    <input type='hidden' name='_csrf' value='{{csfrToken}}'>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-key'></i> Vecchia password</label>
+                        <input type='password' name='oldpwd' class='w3-input w3-border yellow-black' pattern='.{8,255}' required autofocus />
+                    </div>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-check'></i> Nuova password</label>
+                        <input type='password' name='newpwd' id='pwd1' class='w3-input w3-border yellow-black' pattern='.{8,255}' required />
+                    </div>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-check-double'></i> Ripeti la nuova password</label>
+                        <input type='password' name='pwd' id='pwd2' class='w3-input w3-border yellow-black' pattern='.{8,255}' required />
+                    </div>
+                    <div class='w3-panel w3-cell-row'>
+                        <a href='/it/gestione' class='w3-btn w3-cell w3-left yellow-black' style='width: 49%;'>INDIETRO</a>
+                        <input type='submit' class='w3-btn w3-cell w3-right yellow-black' style='width: 49%;' name='Cambia' id='btn' value='CONFERMA'>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    {{else if azione.elimina}}
+        {{#if error}}
+            <div id='errore' class='w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other' style='width:300px;'>
+                <span onclick="document.getElementById('errore').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+                <span>La password non corrisponde</span>
+            </div>
+        {{/if}}
+        <br>
+        <div class='w3-container w3-center' style='width: 500px; margin: auto;'>
+            <h2 class='w3-text-red w3-jumbo' style='font-family: ' Blender Pro';'>ATTENZIONE</h2>
+            <form action='/it/gestione/elimina' method='post' class='w3-container black-yellow'>
+                <input type='hidden' name='_csrf' value='{{csfrToken}}'>
+                <div class='w3-left-align'>L'eliminazione dell'account è irreversibile. Confermando l'operazione verranno eliminati tutti i dati relativi all'utente e non sarà possibile recuperarli.</div>
+                <div class='w3-panel'>
+                    <label><i class='fas fa-shield-alt'></i> Conferma inserendo la password</label>
+                    <input type='password' name='oldpwd' class='w3-input w3-border yellow-black' pattern='.{8,255}' required />
+                </div>
+                <div class='w3-panel w3-cell-row'>
+                    <a href='/it/gestione' class='w3-btn w3-cell w3-left yellow-black' style='width: 49%;'>INDIETRO</a>
+                    <input type='submit' class='w3-btn w3-cell w3-right yellow-black' style='width: 49%;' name='Elimina' id='btn' value='CONFERMA'>
+                </div>
+            </form>
+        </div>
+    {{else if azione.sicurezza}}
+        {{#if post.salva}}
+            {{#if error}}
+                <div id='errore' class='w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other' style='width:450px;'>
+                    <span onclick="document.getElementById('errore').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                    <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+                    <span>La password non corrisponde</span>
+                </div>
+            {{else}}
+                {{#if post.sicurezza}}
+                    <div class='w3-panel w3-green w3-text-black w3-center other' style='width:400px; margin: auto;'>
+                        <p>
+                            PIN impostato correttamente!<br>
+                            <a class='w3-btn w3-white w3-text-green' href='/it/index'>Torna alla Home <i class='fas fa-undo-alt'></i></a>
+                        </p>
+                    </div>
+                {{else}}
+                    <div class='w3-panel w3-green w3-text-black w3-center other' style='width:400px; margin: auto;'>
+                        <p>
+                            PIN eliminato correttamente!<br>
+                            <a class='w3-btn w3-white w3-text-green' href='/it/index'>Torna alla Home <i class='fas fa-undo-alt'></i></a>
+                        </p>
+                    </div>
+                {{/if}}
+            {{/if}}
+        {{/if}}
+        <br>
+        {{#if pin}}
+            <script>
+                function verifica(radio) {
+                    if (radio.value == 'pin') {
+                        document.getElementById('btn').disabled = true;
+                        document.getElementById('conferma').style.display = 'none';
+                    }
+                    else {
+                        document.getElementById('btn').disabled = false;
+                        document.getElementById('conferma').style.display = 'block';
+                    }
+                }
+            </script>
+        {{else}}
+            <script>
+                function verifica(radio) {
+                    if (radio.value == 'nessuna')
+                        document.getElementById('ins_pin').style.display = 'none';
+                    else
+                        document.getElementById('ins_pin').style.display = 'block';
+                }
+
+                function conferma() {
+                    var p1 = document.getElementById('pwd1').value;
+                    var p2 = document.getElementById('pwd2').value;
+                    var pattern1 = /\d{4,8}/g;
+                    var pattern2 = /\d{4,8}/g;
+
+                    if (pattern1.test(p1) && pattern2.test(p2))
+                        document.getElementById('conferma').style.display = 'block';
+                    else
+                        document.getElementById('conferma').style.display = 'none';
+                }
+
+                function salva() {
+                    if (document.getElementById('conferma').value != '')
+                        document.getElementById('btn').disabled = false;
+                    else
+                        document.getElementById('btn').disabled = true;
+                }
+
+                function uguali() {
+                    p1 = document.getElementById('pwd1').value;
+                    p2 = document.getElementById('pwd2').value;
+                    if (p1 == p2)
+                        return true;
+                    else {
+                        document.getElementById('diverse').style.display = 'block';
+                        return false;
+                    }
+                }
+            </script>
+        {{/if}}
+
+        <div id='diverse' class='w3-modal'>
+            <div class='w3-modal-content w3-animate-zoom'>
+                <div class='w3-container w3-red w3-text-black w3-center w3-xlarge'>
+                    <span onclick="document.getElementById('diverse').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                    <i class='fas fa-exclamation-triangle'></i> ERRORE
+                    <p>I PIN non corrispondono</p>
+                </div>
+            </div>
+        </div>
+
+        <div class='w3-content' style='width: 600px; margin: auto;'>
+            <fieldset class='w3-card w3-border-black'>
+                <legend class='w3-large w3-center'><b>OPZIONI DI SICUREZZA</b></legend>
+                <form action='/it/gestione/sicurezza' method='post' onsubmit='return uguali();' class='w3-container black-yellow'>
+                    <input type='hidden' name='_csrf' value='{{csfrToken}}'>
+                    <div class='w3-panel'>
+                        <input type='radio' name='sicurezza' value='nessuna' onclick='verifica(this);' {{#unless pin}}checked{{/unless}} class='w3-radio'>
+                        <label>Nessuna</label>
+                        <div style='margin-left: 50px;'>ATTENZIONE: selezionando questa opzione, in caso di smarrimento password tutte le informazioni verrano perse e non sarà possibile recuperarle</div>
+                    </div>
+                    <div class='w3-panel'>
+                        <input type='radio' name='sicurezza' value='pin' onclick='verifica(this);' {{#if pin}}checked{{/if}} class='w3-radio'>
+                        <label>Codice PIN</label>
+                        <div style='margin-left: 50px;'>Selezionando questa opzione, in caso di smarrimento password sarà possibile resettarla tramite il proprio PIN. Al contrario, sarà possibile resettare il PIN tramite la password</div>
+                        {{#unless pin}}
+                            <div class='w3-container' id='ins_pin' style='display:none;'>
+                                <div class='w3-panel'>
+                                    <label>Inserire un PIN (4-8 cifre)</label>
+                                    <input type='password' name='pin' id='pwd1' class='w3-input' oninput='conferma();'>
+                                </div>
+                                <div class='w3-panel'>
+                                    <label>Confermare il PIN</label>
+                                    <input type='password' id='pwd2' class='w3-input' oninput='conferma();'>
+                                </div>
+                            </div>
+                        {{/unless}}
+                    </div>
+                    <div class='w3-panel w3-center' style='display:none;' id='conferma'>
+                        <label><i class='fas fa-shield-alt'></i> Conferma inserendo la password</label>
+                        <input type='password' name='oldpwd' class='w3-input w3-border yellow-black' oninput='salva();' pattern='.{8,255}' required>
+                    </div>
+                    <div class='w3-panel w3-cell-row'>
+                        <a href='/it/gestione' class='w3-btn w3-cell w3-left yellow-black' style='width: 49%;'>INDIETRO</a>
+                        <input type='submit' class='w3-btn w3-cell w3-right yellow-black' style='width: 49%;' name='Salva' id='btn' value='SALVA' disabled>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+
+    {{else if azione.pin}}
+        {{#if error}}
+            <div id='errore' class='w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other' style='width:300px;'>
+                <span onclick="document.getElementById('errore').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+                <span>Il vecchio PIN non corrisponde</span>
+            </div>
+        {{else if same}}
+            <div id='same' class='w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other' style='width:300px;'>
+                <span onclick="document.getElementById('same').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+                <span>Il nuovo PIN non può essere uguale a quello vecchio</span>
+            </div>
+        {{else if post}}
+            <div class='w3-panel w3-green w3-text-black w3-center other' style='width:400px; margin: auto;'>
+                <p>
+                    Il PIN è stato aggiornato correttamente!<br>
+                    <a class='w3-btn w3-white w3-text-green' href='/it/index'>Torna alla Home <i class='fas fa-undo-alt'></i></a>
+                </p>
+            </div>
+        {{/if}}
+        <br>
+        <div id='diverse' class='w3-modal'>
+            <div class='w3-modal-content w3-animate-zoom'>
+                <div class='w3-container w3-red w3-text-black w3-center w3-xlarge'>
+                    <span onclick="document.getElementById('diverse').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                    <i class='fas fa-exclamation-triangle'></i> ERRORE
+                    <p>I PIN non corrispondono</p>
+                </div>
+            </div>
+        </div>
+        <div class='w3-container' style='width: 350px; margin: auto;'>
+            <fieldset class='w3-card w3-border-black'>
+                <legend class='w3-large w3-center'><b>MODIFICA PIN</b></legend>
+                <form action='/it/gestione/pin' method='post' class='w3-container black-yellow' onsubmit='return uguali();'>
+                    <input type='hidden' name='_csrf' value='{{csfrToken}}'>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-key'></i> Vecchio PIN</label>
+                        <input type='password' name='oldpin' class='w3-input w3-border yellow-black' pattern='[0-9]{4,8}' required />
+                    </div>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-check'></i> Nuovo PIN</label>
+                        <input type='password' name='newpin' id='pwd1' class='w3-input w3-border yellow-black' pattern='[0-9]{4,8}' required />
+                    </div>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-check-double'></i> Ripeti il nuovo PIN</label>
+                        <input type='password' name='pin' id='pwd2' class='w3-input w3-border yellow-black' pattern='[0-9]{4,8}' required />
+                    </div>
+                    <div class='w3-panel w3-cell-row'>
+                        <a href='/it/gestione' class='w3-btn w3-cell w3-left yellow-black' style='width: 49%;'>INDIETRO</a>
+                        <input type='submit' class='w3-btn w3-cell w3-right yellow-black' style='width: 49%;' name='Pin' id='btn' value='CONFERMA'>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    {{else if azione.reset}}
+        {{#if error}}
+            <div id='errore' class='w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other' style='width:300px;'>
+                <span onclick="document.getElementById('errore').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+                <span>La password non corrisponde</span>
+            </div>
+        {{else if same}}
+            <div id='same' class='w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other' style='width:300px;'>
+                <span onclick="document.getElementById('same').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+                <span>Il nuovo PIN non può essere uguale a quello vecchio</span>
+            </div>
+        {{else if post}}
+            <div class='w3-panel w3-green w3-text-black w3-center other' style='width:400px; margin: auto;'>
+                <p>
+                    Il PIN è stato aggiornato correttamente!<br>
+                    <a class='w3-btn w3-white w3-text-green' href='/it/index'>Torna alla Home <i class='fas fa-undo-alt'></i></a>
+                </p>
+            </div>
+        {{/if}}
+        <div id='diverse' class='w3-modal'>
+            <div class='w3-modal-content w3-animate-zoom'>
+                <div class='w3-container w3-red w3-text-black w3-center w3-xlarge'>
+                    <span onclick="document.getElementById('diverse').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                    <i class='fas fa-exclamation-triangle'></i> ERRORE
+                    <p>I PIN non corrispondono</p>
+                </div>
+            </div>
+        </div>
+        <div class='w3-container' style='width: 350px; margin: auto;'>
+            <fieldset class='w3-card w3-border-black'>
+                <legend class='w3-large w3-center'><b>RESET PIN</b></legend>
+                <form action='/it/gestione/reset' method='post' class='w3-container black-yellow' onsubmit='return uguali();'>
+                    <input type='hidden' name='_csrf' value='{{csfrToken}}'>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-check'></i> Nuovo PIN</label>
+                        <input type='password' name='newpin' id='pwd2' class='w3-input w3-border yellow-black' pattern='[0-9]{4,8}' required />
+                    </div>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-check-double'></i> Ripeti il nuovo PIN</label>
+                        <input type='password' id='pwd1' class='w3-input w3-border yellow-black' pattern='[0-9]{4,8}' required />
+                    </div>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-key'></i> Conferma con la password</label>
+                        <input type='password' name='pwd' class='w3-input w3-border yellow-black' pattern='.{8,255}' required />
+                    </div>
+                    <div class='w3-panel w3-cell-row'>
+                        <a href='/it/gestione' class='w3-btn w3-cell w3-left yellow-black' style='width: 49%;'>INDIETRO</a>
+                        <input type='submit' class='w3-btn w3-cell w3-right yellow-black' style='width: 49%;' name='Reset' id='btn' value='CONFERMA'>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    {{else if azione.email}}
+        {{#if error}}
+            <div id='errore' class='w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other' style='width:300px;'>
+                <span onclick="document.getElementById('errore').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+                <span>La password non corrisponde</span>
+            </div>
+        {{else if same}}
+            <div id='errore' class='w3-modal-content w3-red w3-text-black w3-center w3-animate-zoom other' style='width:300px;'>
+                <span onclick="document.getElementById('errore').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+                <span>La nuova email è già in uso</span>
+            </div>
+        {{else if post}}
+            <div class='w3-panel w3-green w3-text-black w3-center other' style='width:400px; margin: auto;'>
+                <p>
+                    L'email è stata aggiornata correttamente!<br>
+                    <a class='w3-btn w3-white w3-text-green' href='/it/index'>Torna alla Home <i class='fas fa-undo-alt'></i></a>
+                </p>
+            </div>
+        {{/if}}
+        <br>
+        <div id='diverse' class='w3-modal'>
+            <div class='w3-modal-content w3-animate-zoom'>
+                <div class='w3-container w3-red w3-text-black w3-center w3-xlarge'>
+                    <span onclick="document.getElementById('diverse').style.display='none'" class='w3-button w3-display-topright'>&times;</span>
+                    <i class='fas fa-exclamation-triangle'></i> ERRORE
+                    <p>Le email non corrispondono</p>
+                </div>
+            </div>
+        </div>
+        <div class='w3-container' style='width: 350px; margin: auto;'>
+            <fieldset class='w3-card w3-border-black'>
+                <legend class='w3-large w3-center'><b>MODIFICA EMAIL</b></legend>
+                <form action='/it/gestione/email' method='post' class='w3-container black-yellow' onsubmit='return uguali();'>
+                    <input type='hidden' name='_csrf' value='{{csfrToken}}'>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-at'></i> Email corrente</label>
+                        <input type='email' name='oldmail' class='w3-input w3-border yellow-black' value='{{email}}' readonly />
+                    </div>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-check'></i> Nuova email</label>
+                        <input type='email' name='newmail' id='pwd1' class='w3-input w3-border yellow-black' required />
+                    </div>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-check-double'></i> Ripeti la nuova email</label>
+                        <input type='email' id='pwd2' class='w3-input w3-border yellow-black' required />
+                    </div>
+                    <div class='w3-panel'>
+                        <label><i class='fas fa-key'></i> Conferma con la password</label>
+                        <input type='password' name='pwd' class='w3-input w3-border yellow-black' pattern='.{8,255}' required />
+                    </div>
+                    <div class='w3-panel w3-cell-row'>
+                        <a href='/it/gestione' class='w3-btn w3-cell w3-left yellow-black' style='width: 49%;'>INDIETRO</a>
+                        <input type='submit' class='w3-btn w3-cell w3-right yellow-black' style='width: 49%;' name='Email' id='btn' value='CONFERMA'>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    {{/if}}
+{{else}}
+    <div class='w3-content'>
+        <div class='w3-container' style='width:400px; margin:auto;'>
+            <div class='w3-panel'>
+                <a href='/it/gestione/sicurezza' class='w3-btn w3-block w3-border-yellow w3-border'><i class='fas fa-user-cog'></i> Gestione sicurezza</a>
+            </div>
+            {{#if pin}}
+                <div class='w3-panel'>
+                    <a href='/it/gestione/pin' class='w3-btn w3-block w3-border-yellow w3-border'><i class='fas fa-pen'></i>Cambia PIN</a>
+                </div>
+                <div class='w3-panel'>
+                    <a href='/it/gestione/reset' class='w3-btn w3-block w3-border-yellow w3-border'><i class='fas fa-eraser'></i> Reset PIN</a>
+                </div>
+            {{/if}}
+
+            <div class='w3-panel'>
+                <a href='/it/gestione/cambia' class='w3-btn w3-block w3-border-yellow w3-border'><i class='fas fa-unlock-alt'></i> Cambia password</a>
+            </div>
+            <div class='w3-panel'>
+                <a href='/it/gestione/email' class='w3-btn w3-block w3-border-yellow w3-border'><i class='fas fa-envelope'></i> Cambia email</a>
+            </div>
+            <div class='w3-panel'>
+                <a href='/it/gestione/elimina' class='w3-btn w3-block w3-border-yellow w3-border'><i class='fas fa-user-slash'></i> Elimina account</a>
+            </div>
+            <br>
+            <div class='w3-panel'>
+                <a href='/it/index' class='w3-btn w3-block w3-border-yellow w3-border'><i class='fas fa-home'></i> Torna alla home</a>
+            </div>
+        </div>
+    </div>
+{{/if}}
+<script>
+    function uguali() {
+        p1 = document.getElementById('pwd1').value;
+        p2 = document.getElementById('pwd2').value;
+        if (p1 == p2)
+            return true;
+        else {
+            document.getElementById('diverse').style.display = 'block';
+            return false;
+        }
+    }
+</script>

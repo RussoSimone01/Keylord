@@ -1,0 +1,116 @@
+<header class="w3-center">
+    <h1 class="black-yellow">KeyLord</h1>
+    A single place for all your passwords
+</header>
+<script>
+    function uguali() {
+        p1 = document.getElementById("pwd1").value;
+        p2 = document.getElementById("pwd2").value;
+        if (p1 == p2)
+            return true;
+        else {
+            document.getElementById('diverse').style.display = 'block';
+            return false;
+        }
+    }
+</script>
+
+{{#if invia}}
+    {{#if invia.continua}}
+        {{#if noUser}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> ERROR</h3>
+                <span>Username nonexistent</span>
+            </div>
+        {{else if noPin}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> ERROR</h3>
+                <span>No PIN assigned to this user</span>
+            </div>
+        {{else if lock}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> ERROR</h3>
+                <span>PIN blocked: address keylord@altervista.org to require {{#if tentaPwd}}PIN{{else}}account{{/if}} reactivation</span>
+            </div>
+        {{else if error}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> ERRORE</h3>
+                <span>Wrong PIN<br>{{tentaPin}} attempts rimaining</span>
+            </div>
+        {{/if}}
+    {{else if invia.conferma}}
+        {{#if same}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> ERROR</h3>
+                <span>The new password must not match the old one</span>
+            </div>
+        {{else}}
+            <div class="w3-panel w3-green w3-text-black w3-center other" style="width:400px; margin: auto;">
+                <p>
+                    Password updated successfully!<br>
+                    <a class="w3-btn w3-white w3-text-green" href="/en/index">Back to Login <i class="fas fa-undo-alt"></i></a>
+                </p>
+            </div>
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{#if noSessionUserPin}}
+    <div class="w3-container w3-padding" style="width:400px; margin: auto;">
+        <fieldset class="w3-card w3-border-black">
+            <legend class="w3-xxlarge w3-center"><b>PASSWORD RECOVERY</b></legend>
+            <form class="w3-container black-yellow" action="/en/recovery" method="post">
+                <div class="w3-panel">
+                    <label><i class="fas fa-user"></i> USERNAME</label>
+                    <input type="text" class="w3-input w3-border yellow-black" name="User" required autofocus title="Insert the username" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Insert the username')">
+                </div>
+                <div class="w3-panel">
+                    <label><i class="fas fa-lock"></i> PIN</label>
+                    <input type="password" class="w3-input w3-border yellow-black" name="Pin" required pattern="[0-9]{4,12}" title="Insert the PIN" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Insert the PIN')">
+                    <div>Be sure to have set up a PIN for the recovery, otherwise it will not be possible to reset the password</div>
+                </div>
+                <div class="w3-panel w3-padding">
+                    <input type="submit" value="CONTINUE" class="w3-btn w3-block yellow-black" name="Invia">
+                </div>
+            </form>
+        </fieldset>
+    </div>
+{{else}}
+    <div id="diverse" class="w3-modal">
+        <div class="w3-modal-content w3-animate-zoom">
+            <div class="w3-container w3-red w3-text-black w3-center w3-xlarge">
+                <span onclick="document.getElementById('diverse').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                <i class="fas fa-exclamation-triangle"></i> ERROR
+                <p>Passwords don't match</p>
+            </div>
+        </div>
+    </div>
+    <div class="w3-container w3-padding" style="width:400px; margin: auto;">
+        <fieldset class="w3-card w3-border-black">
+            <legend class="w3-xxlarge w3-center"><b>PASSWORD RECOVERY</b></legend>
+            <form class="w3-container black-yellow" action="/en/recovery" method="post" onsubmit="return uguali();">
+                <div class="w3-panel">
+                    <label><i class="fas fa-check"></i> New password</label>
+                    <input type='password' name='newpwd' id='pwd1' class="w3-input w3-border yellow-black" pattern=".{8,255}" required autofocus />
+                </div>
+                <div class="w3-panel">
+                    <label><i class="fas fa-check-double"></i> Repeat the new password</label>
+                    <input type='password' id='pwd2' class="w3-input w3-border yellow-black" pattern=".{8,255}" required />
+                </div>
+                <div class="w3-panel w3-padding">
+                    <input type="submit" value="CONFIRM" class="w3-btn w3-block yellow-black" name="Invia">
+                </div>
+            </form>
+        </fieldset>
+    </div>
+{{/if}}
+
+<footer class="yellow-black w3-center">
+    <p class="w3-xlarge"><a href="/en/login">Back to Login</a></p>
+    <p class="w3-padding w3-bottom" style="position: relative;"><a href="/en/recovery">Versione ITALIANA</a></p>
+</footer>

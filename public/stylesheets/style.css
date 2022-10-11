@@ -1,0 +1,113 @@
+@font-face {
+    font-family: 'Blender Pro';
+    src: local('Blender Pro Bold'), local('Blender-Pro-Bold'),
+        url('BlenderPro-Bold.woff2') format('woff2'),
+        url('BlenderPro-Bold.woff') format('woff'),
+        url('BlenderPro-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+input + span::after {
+	content: "";
+}
+
+input:focus + span::after {
+	content: attr(title);
+}
+
+.yellow-black {
+	color: #f8ef02;
+	background-color: black;
+	font-family: "Blender Pro";
+	font-size: large;
+}
+
+input[type="text"].yellow-black {
+	font-family: Arial, Helvetica, serif;
+	color: #f8ef02;
+	background-color: black;
+	font-size: large;
+}
+
+h1.yellow-black {
+	color: #f8ef02;
+	background-color: black;
+	font-family: "Blender Pro";
+	font-size: 45px;
+}
+
+tr.yellow-black:hover td {
+	color: black;
+	background-color: #f8ef02;
+}
+
+tr.yellow-black:hover input {
+	color: black;
+	background-color: #f8ef02;
+	border-color: #f8ef02;
+}
+
+tr td {
+	font-family: Arial, Helvetica, serif;
+	color: #f8ef02;
+	background-color: black;
+	font-size: large;
+}
+
+.black-yellow {
+	color: black;
+	background-color: #f8ef02;
+	font-family: "Blender Pro";
+	font-size: large;
+}
+
+h1.black-yellow {
+	color: black;
+	background-color: #f8ef02;
+	font-family: "Blender Pro";
+	font-size: 45px;
+}
+
+.other {
+	font-family: "Blender Pro";
+	font-size: large;
+}
+
+html {
+	height: 100%;
+	margin: 0;
+}
+
+input:focus {
+	border-color: black;
+}
+
+.w3-bar *{
+	height: 45px;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #f8ef02;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #f8ef02;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #f8ef02;
+}
+
+#searchbar {
+	width: 300px;
+	outline: none;
+	border: 1px solid #f8ef02;
+	-webkit-transition: width 0.4s ease-in-out;
+	transition: width 0.4s ease-in-out;
+}
+
+#searchbar:focus {
+	width: 100%;
+}

@@ -1,0 +1,40 @@
+<header class='w3-center'>
+    <h1 class='black-yellow'>KeyLord</h1>
+    Un'unico posto per tutte le tue password
+</header>
+{{#if lock}}
+    <br>
+    <div class='w3-panel w3-red w3-text-black w3-center other' style='width:350px; margin: auto;'>
+        <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+        <span>Password bloccata<br>{{#if tentaPin}}<a href='/it/recupero'>Recupero password<a>{{else}}Nessun PIN impostato: rivolgersi a keylord@altervista.org per richiedere la riattivazione dell'account{{/if}}</span>
+    </div>
+{{else if error}}
+    <br>
+    <div class='w3-panel w3-red w3-text-black w3-center other' style='width:300px; margin: auto;'>
+        <h3><i class='fas fa-exclamation-triangle'></i> ERRORE</h3>
+        <span>{{#if tentaPwd}}Password errata<br> {{tentaPwd}} tentativi rimasti{{else}}Nome utente inesistente{{/if}}</span>
+    </div>
+{{/if}}
+<div class='w3-container w3-padding' style='width:350px; margin: auto;'>
+    <fieldset class='w3-card w3-border-black'>
+        <legend class='w3-xxlarge w3-center'><b>LOGIN</b></legend>
+        <form class='w3-container black-yellow' action='/it/login' method='post'>
+            <div class='w3-panel'>
+                <label><i class='fas fa-user'></i> NOME UTENTE</label>
+                <input type='text' class='w3-input w3-border yellow-black' name='User' required autofocus title='Inserire il nome utente' oninput='this.setCustomValidity("")' oninvalid='this.setCustomValidity("Inserire il nome utente")'>
+            </div>
+            <div class='w3-panel'>
+                <label><i class='fas fa-lock'></i> PASSWORD</label>
+                <input type='password' class='w3-input w3-border yellow-black' name='Pwd' required title='Inserire la password' oninput='this.setCustomValidity("")' oninvalid='this.setCustomValidity("Inserire la password")'>
+                <div class='w3-medium w3-center'><a href='/it/recupero'>Password dimenticata?</a></div>
+            </div>
+            <div class='w3-panel w3-padding'>
+                <button type='submit' class='w3-btn w3-block yellow-black' name='Invia' value='ACCEDI'>ACCEDI <i class='fas fa-sign-in-alt'></i></button>
+            </div>
+        </form>
+    </fieldset>
+</div>
+<footer class='yellow-black w3-center'>
+    <p class='w3-xlarge'>Non hai un account?<br><a href='/it/registrazione'>REGISTRATI ORA!</a></p>
+    <p class='w3-padding w3-bottom' style='position: relative;'><a href='/en/login'>ENGLISH Version</a></p>
+</footer>
