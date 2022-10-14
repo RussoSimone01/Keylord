@@ -1,6 +1,6 @@
 config = {
-    user: 'root',
-    password: 'toor',
+    user: 'yourUsername',
+    password: 'yourPassword',
     database: 'keylord'
 }
 
