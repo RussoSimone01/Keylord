@@ -12,7 +12,7 @@ function cifra(txt, password) {
     var cipher = crypto.createCipheriv('aes-256-cbc', password, iv);
     txt = cipher.update(txt, 'utf-8', 'hex');
     txt += cipher.final('hex');
-    txt = iv.toString('hex') + ':' + txt;   //iv:testoCifrato
+    txt = iv.toString('hex') + ':' + txt; //iv:testoCifrato
     return txt;
 }
 

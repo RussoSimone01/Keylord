@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Ott 11, 2022 alle 10:34
+-- Creato il: Set 17, 2023 alle 10:29
 -- Versione del server: 10.4.11-MariaDB
 -- Versione PHP: 7.4.3
 
@@ -30,7 +30,7 @@ USE `keylord`;
 -- Struttura della tabella `dati`
 --
 
-CREATE TABLE `dati` (
+CREATE TABLE IF NOT EXISTS `dati` (
   `ID` int(11) NOT NULL,
   `Backup` int(11) DEFAULT NULL,
   `Utente` varchar(255) NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE `dati` (
 -- Struttura della tabella `sicurezza`
 --
 
-CREATE TABLE `sicurezza` (
+CREATE TABLE IF NOT EXISTS `sicurezza` (
   `Utente` varchar(255) NOT NULL,
   `Email` varchar(255) DEFAULT NULL,
   `TentativiPassword` int(1) NOT NULL DEFAULT 3,
@@ -58,7 +58,7 @@ CREATE TABLE `sicurezza` (
 -- Struttura della tabella `utenti`
 --
 
-CREATE TABLE `utenti` (
+CREATE TABLE IF NOT EXISTS `utenti` (
   `Utente` varchar(255) NOT NULL,
   `Password` varchar(255) NOT NULL,
   `PasswordSalt` varchar(255) NOT NULL,
