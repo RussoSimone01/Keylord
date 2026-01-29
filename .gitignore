@@ -5,3 +5,4 @@ startMariaDb.bat
 stopMariaDb.bat
 Relazione Russo.pdf
 node_modules
+.env

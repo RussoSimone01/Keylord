@@ -1,10 +1,10 @@
 var mysql = require('mysql');
-var conf = require('./config');
+require('dotenv').config()
 
 var pool = mysql.createPool({
-    user: conf.user,
-    password: conf.password,
-    database: conf.database
+    user: process.env.DB_USER,
+    password: process.env.DB_PWD,
+    database: process.env.DB_NAME
 });
 
 var getConnection = function (callback) {
