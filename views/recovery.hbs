@@ -1,0 +1,115 @@
+<header class="w3-center">
+    <h1 class="black-yellow">{{t "keyLord"}}</h1>
+    {{ t "recovery.subTitle"}}
+</header>
+<script>
+    function checkPwd() {
+        p1 = document.getElementById("pwd1").value;
+        p2 = document.getElementById("pwd2").value;
+        if (p1 == p2)
+            return true;
+        else {
+            document.getElementById('diverse').style.display = 'block';
+            return false;
+        }
+    }
+</script>
+
+{{#if invia}}
+    {{#if invia.continua}}
+        {{#if noUser}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> {{t "error"}}</h3>
+                <span>{{t "recovery.unknownUser"}}</span>
+            </div>
+        {{else if noPin}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> {{t "error"}}</h3>
+                <span>{{t "recovery.noPin"}}</span>
+            </div>
+        {{else if lock}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> {{t "error"}}</h3>
+                <span>{{#if tentaPwd}}{{t "recovery.lockedPin"}}{{else}}{{t "recovery.lockedAccount"}}{{/if}}</span>
+            </div>
+        {{else if error}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> {{t "error"}}</h3>
+                <span>{{t "recovery.wrongPin"}}<br>{{tentaPin}} {{t "recovery.leftAttempts"}}</span>
+            </div>
+        {{/if}}
+    {{else if invia.conferma}}
+        {{#if same}}
+            <br>
+            <div class="w3-panel w3-red w3-text-black w3-center other" style="width:350px; margin: auto;">
+                <h3><i class="fas fa-exclamation-triangle"></i> {{t "error"}}</h3>
+                <span>{{t "recovery.invalidNewPwd"}}</span>
+            </div>
+        {{else}}
+            <div class="w3-panel w3-green w3-text-black w3-center other" style="width:400px; margin: auto;">
+                <p>
+                    {{t "recovery.success"}}<br>
+                    <a class="w3-btn w3-white w3-text-green" href="/index">{{t "recovery.backToLogin"}} <i class="fas fa-undo-alt"></i></a>
+                </p>
+            </div>
+        {{/if}}
+    {{/if}}
+{{/if}}
+
+{{#if noSessionUserPin}}
+    <div class="w3-container w3-padding" style="width:400px; margin: auto;">
+        <fieldset class="w3-card w3-border-black">
+            <legend class="w3-xxlarge w3-center"><b>{{t "recovery.panelTitle"}}</b></legend>
+            <form class="w3-container black-yellow" action="/recovery" method="post">
+                <div class="w3-panel">
+                    <label><i class="fas fa-user"></i> {{t "data.userLabel"}}</label>
+                    <input type="text" class="w3-input w3-border yellow-black" name="User" required autofocus title="{{t "recovery.usernameRequired"}}" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('{{t "recovery.usernameRequired"}}')">
+                </div>
+                <div class="w3-panel">
+                    <label><i class="fas fa-lock"></i> {{t "data.pinLabel"}}</label>
+                    <input type="password" class="w3-input w3-border yellow-black" name="Pin" required pattern="[0-9]{4,12}" title="{{t "recovery.pinRequired"}}" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('{{t "recovery.pinRequired"}}')">
+                    <div>{{t "recovery.pinMsg"}}</div>
+                </div>
+                <div class="w3-panel w3-padding">
+                    <input type="submit" value="{{t "recovery.continue"}}" class="w3-btn w3-block yellow-black" name="Invia">
+                </div>
+            </form>
+        </fieldset>
+    </div>
+{{else}}
+    <div id="diverse" class="w3-modal">
+        <div class="w3-modal-content w3-animate-zoom">
+            <div class="w3-container w3-red w3-text-black w3-center w3-xlarge">
+                <span onclick="document.getElementById('diverse').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                <i class="fas fa-exclamation-triangle"></i> {{t "error"}}
+                <p>{{t "recovery.pwdCheckFailed"}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="w3-container w3-padding" style="width:400px; margin: auto;">
+        <fieldset class="w3-card w3-border-black">
+            <legend class="w3-xxlarge w3-center"><b>{{t "recovery.panelTitle"}}</b></legend>
+            <form class="w3-container black-yellow" action="/recovery" method="post" onsubmit="return checkPwd();">
+                <div class="w3-panel">
+                    <label><i class="fas fa-check"></i> {{t "recovery.newPwd"}}</label>
+                    <input type='password' name='newpwd' id='pwd1' class="w3-input w3-border yellow-black" pattern=".{8,255}" required autofocus />
+                </div>
+                <div class="w3-panel">
+                    <label><i class="fas fa-check-double"></i> {{t "data.repeatPwdLabel"}}</label>
+                    <input type='password' id='pwd2' class="w3-input w3-border yellow-black" pattern=".{8,255}" required />
+                </div>
+                <div class="w3-panel w3-padding">
+                    <input type="submit" value="{{t "recovery.confirm"}}" class="w3-btn w3-block yellow-black" name="Invia">
+                </div>
+            </form>
+        </fieldset>
+    </div>
+{{/if}}
+
+<footer class="yellow-black w3-center">
+    <p class="w3-xlarge"><a href="/login">{{t "recovery.backToLogin"}}</a></p>
+</footer>

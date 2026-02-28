@@ -1,18 +1,57 @@
 <!DOCTYPE html>
-<html lang="{{lang}}">
+<html>
 
-  <head>
-    <title>keylord - {{title}}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="UTF-8">
-    <link rel="shortcut icon" href="/images/lock-{{imglock}}solid.ico" />
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.13.0/css/all.css">
-  </head>
+    <head>
+        <title>{{t "keyLord"}} - {{title}}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="UTF-8">
+        <link rel="shortcut icon" href="/images/lock-{{imglock}}solid.ico" />
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.13.0/css/all.css">
+        <script>
+            function changeLanguage(lng) {
+                const date = new Date();
+                date.setFullYear(date.getFullYear() + 1);
+                document.cookie = `i18next=${lng}; expires=${date.toUTCString()}; path=/`;
+                location.reload();
+            }
 
-  <body class="yellow-black">
-    {{{body}}}
-  </body>
+            function getCookie(cname) {
+                let name = cname + "=";
+                let decodedCookie = decodeURIComponent(document.cookie);
+                let ca = decodedCookie.split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+
+            addEventListener('load', () => {
+                var lng = getCookie("i18next");
+                if (lng != "") {
+                    document.getElementById("languageSelect").value = lng;
+                }
+                else {
+                    changeLanguage(navigator.language);
+                    document.getElementById("languageSelect").value = navigator.language;
+                }
+            })
+        </script>
+    </head>
+
+    <body class="yellow-black">
+        <select id="languageSelect" onchange="changeLanguage(this.value)">
+            <option value="it">Italiano</option>
+            <option value="en">English</option>
+        </select>
+        {{{body}}}
+    </body>
 
 </html>

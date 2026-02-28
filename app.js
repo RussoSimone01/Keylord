@@ -1,4 +1,5 @@
-require('dotenv').config()
+require('dotenv').config();
+const { i18next, middleware } = require("./public/javascripts/i18n.js");
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -8,21 +9,13 @@ var logger = require('morgan');
 var crypto = require('crypto');
 var csurf = require('csurf');
 
-
 var index = require('./routes/index');
-var itGestione = require('./routes/it/gestione');
-var itIndex = require('./routes/it/index');
-var itLogin = require('./routes/it/login');
-var itRandom = require('./routes/it/random');
-var itRecupero = require('./routes/it/recupero');
-var itRegistrazione = require('./routes/it/registrazione');
-var enGestione = require('./routes/en/gestione');
-var enIndex = require('./routes/en/index');
-var enLogin = require('./routes/en/login');
-var enRandom = require('./routes/en/random');
-var enRecupero = require('./routes/en/recupero');
-var enRegistrazione = require('./routes/en/registrazione');
-var generatore = require('./public/javascripts/generatore');
+var optionsManagement = require('./routes/options.js');
+var login = require('./routes/login');
+var random = require('./routes/random');
+var recovery = require('./routes/recovery.js');
+var signUp = require('./routes/signup.js');
+var generator = require('./public/javascripts/generator.js');
 
 var app = express();
 
@@ -36,25 +29,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(sessions({
-  secret: crypto.randomBytes(20).toString("hex"),
-  saveUninitialized: true,
-  resave: false
+    secret: crypto.randomBytes(20).toString("hex"),
+    saveUninitialized: true,
+    resave: false
 }));
+app.use(middleware.handle(i18next));
 /*var csfrPath = [
-  '/it/index',
-  '/en/index',
-  '/it/gestione/cambia',
-  '/en/management/change',
-  '/it/gestione/elimina',
-  '/en/management/delete',
-  '/it/gestione/sicurezza',
-  '/en/management/security',
-  '/it/gestione/pin',
-  '/en/management/pin',
-  '/it/gestione/reset',
-  '/en/management/reset',
-  '/it/gestione/email',
-  '/en/management/email'
+  '/index',
+  '/options/editPwd',
+  '/options/deleteAccount',
+  '/options/securityManagement',
+  '/options/editPin',
+  '/options/resetPin',
+  '/options/editEmail'
 ];
 app.use(function (req, res, next) {
   if (csfrPath.indexOf(req.path) !== -1)
@@ -69,34 +56,28 @@ app.use(function (err, req, res, next) {
 })*/
 
 app.use('/', index);
-app.use('/it/gestione', itGestione);
-app.use('/it/index', itIndex);
-app.use('/it/login', itLogin);
-app.use('/it/random', itRandom);
-app.use('/it/recupero', itRecupero);
-app.use('/it/registrazione', itRegistrazione);
-app.use('/en/management', enGestione);
-app.use('/en/index', enIndex);
-app.use('/en/login', enLogin);
-app.use('/en/random', enRandom);
-app.use('/en/recovery', enRecupero);
-app.use('/en/registration', enRegistrazione);
-app.use('/generatore', generatore);
+app.use('/options', optionsManagement);
+app.use('/index', index);
+app.use('/login', login);
+app.use('/random', random);
+app.use('/recovery', recovery);
+app.use('/signup', signUp);
+app.use('/generator', generator);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+    next(createError(404));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  return res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    return res.render('error');
 });
 
 module.exports = app;

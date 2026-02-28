@@ -1,0 +1,39 @@
+<header class='w3-center'>
+    <h1 class='black-yellow'>{{t "keyLord"}}</h1>
+    {{t "login.subTitle"}}
+</header>
+{{#if lock}}
+    <br>
+    <div class='w3-panel w3-red w3-text-black w3-center other' style='width:350px; margin: auto;'>
+        <h3><i class='fas fa-exclamation-triangle'></i> {{t "error"}}</h3>
+        <span>{{t "login.lockedPwd"}}<br>{{#if tentaPin}}<a href='/recovery'>{{t "login.pwdRecovery"}}<a>{{else}}{{t "login.contactSupport"}}{{/if}}</span>
+    </div>
+{{else if error}}
+    <br>
+    <div class='w3-panel w3-red w3-text-black w3-center other' style='width:300px; margin: auto;'>
+        <h3><i class='fas fa-exclamation-triangle'></i> {{t "error"}}</h3>
+        <span>{{#if tentaPwd}}{{t "login.wrongPwd"}}<br> {{tentaPwd}} {{t "login.leftAttempts"}}{{else}}{{t "login.unknownUser"}}{{/if}}</span>
+    </div>
+{{/if}}
+<div class='w3-container w3-padding' style='width:350px; margin: auto;'>
+    <fieldset class='w3-card w3-border-black'>
+        <legend class='w3-xxlarge w3-center'><b>{{t "login.panelTitle"}}</b></legend>
+        <form class='w3-container black-yellow' action='/login' method='post'>
+            <div class='w3-panel'>
+                <label><i class='fas fa-user'></i> {{t "data.userLabel"}}</label>
+                <input type='text' class='w3-input w3-border yellow-black' name='User' required autofocus title='{{t "login.usernameRequired"}}' oninput='this.setCustomValidity("")' oninvalid='this.setCustomValidity("{{t "login.usernameRequired"}}")'>
+            </div>
+            <div class='w3-panel'>
+                <label><i class='fas fa-lock'></i> {{t "data.pwdLabel"}}</label>
+                <input type='password' class='w3-input w3-border yellow-black' name='Pwd' required title='{{t "login.pwdRequired"}}' oninput='this.setCustomValidity("")' oninvalid='this.setCustomValidity("{{t "login.pwdRequired"}}")'>
+                <div class='w3-medium w3-center'><a href='/recovery'>{{t "login.forgotPwd"}}</a></div>
+            </div>
+            <div class='w3-panel w3-padding'>
+                <button type='submit' class='w3-btn w3-block yellow-black' name='Invia' value='ACCEDI'>{{t "login.signIn"}} <i class='fas fa-sign-in-alt'></i></button>
+            </div>
+        </form>
+    </fieldset>
+</div>
+<footer class='yellow-black w3-center'>
+    <p class='w3-xlarge'>{{t "login.noAccount"}}<br><a href='/signup'>{{t "login.signUpNow"}}</a></p>
+</footer>

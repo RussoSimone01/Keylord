@@ -6,3 +6,4 @@ stopMariaDb.bat
 Relazione Russo.pdf
 node_modules
 .env
+.vscode
