@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var crypto = require('../public/javascripts/security');
-var bcrypt = require('bcrypt');
-var sanitizer = require('../public/javascripts/sanitizer');
-var getConnection = require('../public/javascripts/connessione');
+import { Router } from 'express';
+var router = Router();
+import crypto from '../public/javascripts/security.js';
+import { compareSync, hashSync } from 'bcrypt';
+import { fixedEncodeURIComponent } from '../public/javascripts/sanitizer.js';
+import getConnection from '../public/javascripts/connessione.js';
 
 var options = {
     imglock: '',
@@ -47,8 +47,8 @@ router.route('/')
                     options.lock = true;
                     options.error = true;
 
-                    var User = sanitizer.fixedEncodeURIComponent(req.body.User);
-                    var Pin = sanitizer.fixedEncodeURIComponent(req.body.Pin);
+                    var User = fixedEncodeURIComponent(req.body.User);
+                    var Pin = fixedEncodeURIComponent(req.body.Pin);
 
                     var sql = 'SELECT * FROM utenti JOIN sicurezza USING(Utente) WHERE Utente = ?';
                     connection.query(sql, [User], function (error, results, fields) {
@@ -62,7 +62,7 @@ router.route('/')
 
                             options.tentaPin = result.TentativiPIN;
                             options.tentaPwd = result.TentativiPassword;
-                            if (!options.noPin && options.tentaPin && bcrypt.compareSync(Pin, result.PIN)) {    //controllo esistenza e correttezza pin
+                            if (!options.noPin && options.tentaPin && compareSync(Pin, result.PIN)) {    //controllo esistenza e correttezza pin
                                 req.session.user = User;
                                 req.session.pin = crypto.derivaPassword(Pin, result.PINSalt);
                                 req.session.pinChiaro = Pin;    //devo salvare momentaneamente il pin in chiaro per cifrarlo successivamente con la nuova password
@@ -91,19 +91,19 @@ router.route('/')
                     options.invia.continua = false;
                     options.invia.conferma = true;
 
-                    var newpwd = sanitizer.fixedEncodeURIComponent(req.body.newpwd);
+                    var newpwd = fixedEncodeURIComponent(req.body.newpwd);
                     sql = 'SELECT Password FROM utenti WHERE Utente = ?';
                     connection.query(sql, [req.session.user], function (error, results, fields) {
                         if (error) throw error;
                         //controllo che nuova e vecchia password non corrispondano
-                        options.same = bcrypt.compareSync(newpwd, results[0].Password);
+                        options.same = compareSync(newpwd, results[0].Password);
 
                         if (options.same) {
                             connection.release();
                             return res.render('recovery', options);
                         }
                         var salt = crypto.salt();
-                        var hash = bcrypt.hashSync(newpwd, 10);
+                        var hash = hashSync(newpwd, 10);
 
                         //aggiornamento password
                         sql = 'UPDATE utenti SET Password = ?, PasswordSalt = ? WHERE Utente = ?';
@@ -116,7 +116,7 @@ router.route('/')
                         connection.query(sql, [req.session.user], function (error, results, fields) {
                             if (error) throw error;
                             newpwd = crypto.derivaPassword(newpwd, results[0].PasswordSalt);
-                            var backup = crypto.cifra(req.session.pinChiaro, newpwd);
+                            var backup = cifra(req.session.pinChiaro, newpwd);
                             req.session.pinChiaro = null;
 
                             sql = 'UPDATE utenti SET Backup = ? WHERE Utente = ?';
@@ -185,4 +185,4 @@ router.route('/')
         return res.render('recovery', options);
     });
 
-module.exports = router;
+export default router;

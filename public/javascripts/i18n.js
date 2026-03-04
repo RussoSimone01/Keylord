@@ -1,6 +1,11 @@
-const i18next = require('i18next');
-const Backend = require('i18next-fs-backend');
-const middleware = require('i18next-http-middleware');
+import i18next from 'i18next';
+import Backend from 'i18next-fs-backend';
+import middleware from 'i18next-http-middleware';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 i18next
     .use(Backend)
@@ -18,11 +23,12 @@ i18next
             ignoreCase: true
         }
     }, (err, t) => {
-        if (err) return console.log('something went wrong loading', err);
-        t('key');
+        if (err) {
+            return console.log('something went wrong loading', err);
+        }
     });
 
-module.exports = {
+export default {
     i18next,
     middleware
 };

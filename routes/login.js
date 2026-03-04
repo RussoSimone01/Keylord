@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var crypto = require('../public/javascripts/security');
-var bcrypt = require('bcrypt');
-var sanitizer = require('../public/javascripts/sanitizer');
-var getConnection = require('../public/javascripts/connessione');
+import { Router } from 'express';
+var router = Router();
+import crypto from '../public/javascripts/security.js';
+import { compareSync } from 'bcrypt';
+import { fixedEncodeURIComponent } from '../public/javascripts/sanitizer.js';
+import getConnection from '../public/javascripts/connessione.js';
 
 var options = {
     imglock: '',
@@ -36,8 +36,8 @@ router.route('/')
                     return;
                 }
 
-                var User = sanitizer.fixedEncodeURIComponent(req.body.User);
-                var Pwd = sanitizer.fixedEncodeURIComponent(req.body.Pwd);
+                var User = fixedEncodeURIComponent(req.body.User);
+                var Pwd = fixedEncodeURIComponent(req.body.Pwd);
 
                 var sql = 'SELECT * FROM utenti JOIN sicurezza USING(Utente) WHERE Utente=?';
                 connection.query(sql, [User], function (error, results, fields) {
@@ -49,7 +49,7 @@ router.route('/')
 
                         if (results[0].TentativiPassword > 0) { //se non sono esauriti tentativi password
                             options.lock = false;
-                            if (bcrypt.compareSync(Pwd, results[0].Password)) {
+                            if (compareSync(Pwd, results[0].Password)) {
                                 options.error = false;
                                 options.tentaPwd = 3;
                                 options.tentaPin = results[0].PIN ? 3 : null;
@@ -92,4 +92,4 @@ router.route('/')
             return res.redirect('/login');
     });
 
-module.exports = router;
+export default router;

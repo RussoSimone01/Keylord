@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+import { Router } from 'express';
+var router = Router();
 
 var options = {
     imglock: 'open-',
@@ -15,4 +15,4 @@ router.all('/', function (req, res) {
     return res.render('random', options);
 });
 
-module.exports = router;
+export default router;

@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var crypto = require('../public/javascripts/security');
-var bcrypt = require('bcrypt');
-var sanitizer = require('../public/javascripts/sanitizer');
-var getConnection = require('../public/javascripts/connessione');
+import { Router } from 'express';
+var router = Router();
+import crypto from '../public/javascripts/security.js';
+import { compareSync, hashSync } from 'bcrypt';
+import { fixedEncodeURIComponent } from '../public/javascripts/sanitizer.js';
+import getConnection from '../public/javascripts/connessione.js';
 
 var options = {
     imglock: 'open-',
@@ -61,18 +61,18 @@ router.route('/editPwd')    //cambio password
                 }
 
                 options.azione.cambia = true;
-                var newpwd = sanitizer.fixedEncodeURIComponent(req.body.newpwd);
+                var newpwd = fixedEncodeURIComponent(req.body.newpwd);
 
                 connection.query('SELECT Password FROM utenti WHERE Utente = ?', [req.session.user], function (error, results, fields) {
                     if (error) throw error;
                     //controllo sulla correttezza della vecchia password
-                    options.error = !bcrypt.compareSync(sanitizer.fixedEncodeURIComponent(req.body.oldpwd), results[0].Password);
+                    options.error = !compareSync(fixedEncodeURIComponent(req.body.oldpwd), results[0].Password);
                     //verifica che nuova e vecchia password siano diverse
-                    options.same = bcrypt.compareSync(newpwd, results[0].Password);
+                    options.same = compareSync(newpwd, results[0].Password);
                     if (!options.error && !options.same) {
                         //aggiornamento password
                         var sql = 'UPDATE utenti SET Password = ?, PasswordSalt = ? WHERE Utente = ?';
-                        var hash = bcrypt.hashSync(newpwd, 10);
+                        var hash = hashSync(newpwd, 10);
                         var salt = crypto.salt();
                         connection.query(sql, [hash, salt, req.session.user], function (error, results, fields) {
                             if (error) throw error;
@@ -150,8 +150,8 @@ router.route('/deleteAccount')   //eliminazione account
                 connection.query('SELECT Password FROM utenti WHERE Utente = ?', [req.session.user], function (error, results, fields) {
                     if (error) throw error;
                     //controllo sulla correttezza della vecchia password
-                    if (bcrypt.compareSync(sanitizer.fixedEncodeURIComponent(req.body.oldpwd), results[0].Password)) {
-                        sql = 'DELETE FROM utenti WHERE Utente = ?';
+                    if (compareSync(fixedEncodeURIComponent(req.body.oldpwd), results[0].Password)) {
+                        var sql = 'DELETE FROM utenti WHERE Utente = ?';
                         connection.query(sql, [req.session.user], function (error, results, fields) {
                             if (error) throw error;
                             connection.release();
@@ -198,7 +198,7 @@ router.route('/securityManagement')  //options della sicurezza (attivazione/disa
                 connection.query('SELECT Password FROM utenti WHERE Utente = ?', [req.session.user], function (error, results, fields) {
                     if (error) throw error;
                     //controllo sulla correttezza della vecchia password
-                    options.error = !bcrypt.compareSync(sanitizer.fixedEncodeURIComponent(req.body.oldpwd), results[0].Password);
+                    options.error = !compareSync(fixedEncodeURIComponent(req.body.oldpwd), results[0].Password);
                     if (!options.error) {
                         if (req.body.sicurezza == 'nessuna') { //scelta di disattivazione del PIN
                             //eliminazione delle informazioni del vechio PIN
@@ -242,8 +242,8 @@ router.route('/securityManagement')  //options della sicurezza (attivazione/disa
                             });
 
                             //inserimento del nuovo PIN
-                            var pin = sanitizer.fixedEncodeURIComponent(req.body.pin);
-                            var hash = bcrypt.hashSync(pin, 10);
+                            var pin = fixedEncodeURIComponent(req.body.pin);
+                            var hash = hashSync(pin, 10);
                             var backup = crypto.cifra(pin, req.session.pass);
                             var salt = crypto.salt();
                             sql = 'UPDATE utenti SET PIN = ?, PINSalt = ?, Backup = ? WHERE Utente = ?';
@@ -314,19 +314,19 @@ router.route('/editPin')   //modifica del PIN, solo se attivo
                 }
                 options.azione.pin = true;
                 options.pin = true;
-                var newpin = sanitizer.fixedEncodeURIComponent(req.body.newpin);
+                var newpin = fixedEncodeURIComponent(req.body.newpin);
 
                 connection.query('SELECT PIN FROM utenti WHERE Utente = ?', [req.session.user], function (error, results, fields) {
                     if (error) throw error;
 
                     //controllo sulla correttezza del vecchio PIN
-                    options.error = !bcrypt.compareSync(sanitizer.fixedEncodeURIComponent(req.body.oldpin), results[0].PIN);
+                    options.error = !compareSync(fixedEncodeURIComponent(req.body.oldpin), results[0].PIN);
                     //controllo che nuovo e vecchio PIN siano diversi
-                    options.same = bcrypt.compareSync(newpin, results[0].PIN);
+                    options.same = compareSync(newpin, results[0].PIN);
 
                     if (!options.error && !options.same) {
                         //aggiornamento informazioni relative al PIN
-                        var hash = bcrypt.hashSync(newpin, 10);
+                        var hash = hashSync(newpin, 10);
                         var backup = crypto.cifra(newpin, req.session.pass);
                         var salt = crypto.salt();
                         var sql = 'UPDATE utenti SET PIN = ?, PINSalt = ?, Backup = ? WHERE Utente = ?';
@@ -392,18 +392,18 @@ router.route('/resetPin') //reset del PIN, solo se attivo
                     return;
                 }
                 options.azione.reset = true;
-                var newpin = sanitizer.fixedEncodeURIComponent(req.body.newpin);
+                var newpin = fixedEncodeURIComponent(req.body.newpin);
 
                 connection.query('SELECT Password, PIN FROM utenti WHERE Utente = ?', [req.session.user], function (error, results, fields) {
                     if (error) throw error;
 
                     //controllo sulla correttezza della password
-                    options.error = !bcrypt.compareSync(sanitizer.fixedEncodeURIComponent(req.body.pwd), results[0].Password);
+                    options.error = !compareSync(fixedEncodeURIComponent(req.body.pwd), results[0].Password);
                     //controllo che nuovo e vecchio PIN siano diversi
-                    options.same = bcrypt.compareSync(newpin, results[0].PIN);
+                    options.same = compareSync(newpin, results[0].PIN);
                     if (!options.error && !options.same) {
                         //aggiornamento pin
-                        var hash = bcrypt.hashSync(newpin, 10);
+                        var hash = hashSync(newpin, 10);
                         var backup = crypto.cifra(newpin, req.session.pass);
                         var salt = crypto.salt();
                         var sql = 'UPDATE utenti SET PIN = ?, PINSalt = ?, Backup = ? WHERE Utente = ?';
@@ -479,11 +479,11 @@ router.route('/editEmail') //cambio dell'email
                     return;
                 }
                 options.azione.email = true;
-                var newmail = sanitizer.fixedEncodeURIComponent(req.body.newmail);
+                var newmail = fixedEncodeURIComponent(req.body.newmail);
                 connection.query('SELECT Email, Password FROM sicurezza JOIN utenti USING(Utente) WHERE Utente = ?', [req.session.user], function (error, results, fields) {
                     if (error) throw error;
                     //controllo sulla correttezza della password
-                    options.error = !bcrypt.compareSync(sanitizer.fixedEncodeURIComponent(req.body.pwd), results[0].Password);
+                    options.error = !compareSync(fixedEncodeURIComponent(req.body.pwd), results[0].Password);
                     //controllo che nuova e vecchia email siano diverse
                     options.same = newmail == results[0].Email;
                     if (!options.error && !options.same) {
@@ -510,4 +510,4 @@ router.route('/editEmail') //cambio dell'email
             return res.redirect('/options/editEmail');
     });
 
-module.exports = router;
+export default router;

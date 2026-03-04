@@ -1,7 +1,6 @@
-var mysql = require('mysql');
-require('dotenv').config()
+import { createPool } from 'mysql';
 
-var pool = mysql.createPool({
+var pool = createPool({
     user: process.env.DB_USER,
     password: process.env.DB_PWD,
     database: process.env.DB_NAME
@@ -11,4 +10,4 @@ var getConnection = function (callback) {
     pool.getConnection(callback);
 };
 
-module.exports = getConnection;
+export default getConnection;

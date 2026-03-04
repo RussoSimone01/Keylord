@@ -1,8 +1,8 @@
-var express = require('express');
-var getConnection = require('../public/javascripts/connessione');
-var router = express.Router();
-var crypto = require('../public/javascripts/security');
-var sanitizer = require('../public/javascripts/sanitizer');
+import { Router } from 'express';
+import getConnection from '../public/javascripts/connessione.js';
+var router = Router();
+import crypto from '../public/javascripts/security.js';
+import { fixedEncodeURIComponent } from '../public/javascripts/sanitizer.js';
 
 var options = {
     imglock: 'open-',
@@ -29,7 +29,7 @@ router.route('/')
         };
 
         if (req.body.Invia) {
-            var id = sanitizer.fixedEncodeURIComponent(req.body.id);
+            var id = fixedEncodeURIComponent(req.body.id);
 
             getConnection(function (err, connection) {
                 if (err) {
@@ -56,9 +56,9 @@ router.route('/')
                     });
                 }
                 else {
-                    req.body.sito = sanitizer.fixedEncodeURIComponent(req.body.sito);
-                    req.body.user = sanitizer.fixedEncodeURIComponent(req.body.user);
-                    req.body.pwd = sanitizer.fixedEncodeURIComponent(req.body.pwd);
+                    req.body.sito = fixedEncodeURIComponent(req.body.sito);
+                    req.body.user = fixedEncodeURIComponent(req.body.user);
+                    req.body.pwd = fixedEncodeURIComponent(req.body.pwd);
 
                     if (req.body.Invia == 'INSERISCI' || req.body.Invia == 'INSERT') {
                         var sql = 'INSERT INTO dati VALUES (default, NULL, ?, ?, ?, ?)';
@@ -157,4 +157,4 @@ function setData(req, res) {
     });
 }
 
-module.exports = router;
+export default router;

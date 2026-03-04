@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
+import { Router } from 'express';
+var router = Router();
 
 router.post('/', function (req, res, next) {
-    alphabet = "";
+    var alphabet = "";
     if (req.body.low == "true")
         alphabet += "abcdefghijklmnopqrstuwxyz";
     if (req.body.cap == "true")
@@ -17,17 +17,17 @@ router.post('/', function (req, res, next) {
             alphabet += "<>";
     }
 
-    pass = "";
-    alphaLength = alphabet.length - 1;
-    for (i = 0; i < req.body.len; i++) {
-        n = Math.floor(Math.random() * alphaLength);
+    var pass = "";
+    var alphaLength = alphabet.length - 1;
+    for (var i = 0; i < req.body.len; i++) {
+        var n = Math.floor(Math.random() * alphaLength);
         pass += alphabet[n];
     }
     res.end(pass);
 });
 
 router.get('/', function (req, res, next) {
-    alphabet = "";
+    var alphabet = "";
     if (req.query.low == "true")
         alphabet += "abcdefghijklmnopqrstuwxyz";
     if (req.query.cap == "true")
@@ -42,13 +42,13 @@ router.get('/', function (req, res, next) {
             alphabet += "<>";
     }
 
-    pass = "";
-    alphaLength = alphabet.length - 1;
-    for (i = 0; i < req.query.len; i++) {
-        n = Math.floor(Math.random() * alphaLength);
+    var pass = "";
+    var alphaLength = alphabet.length - 1;
+    for (var i = 0; i < req.query.len; i++) {
+        var n = Math.floor(Math.random() * alphaLength);
         pass += alphabet[n];
     }
     res.end(pass);
 });
 
-module.exports = router;
+export default router;

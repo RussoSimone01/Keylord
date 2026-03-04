@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var bcrypt = require('bcrypt');
-var sanitizer = require('../public/javascripts/sanitizer');
-var getConnection = require('../public/javascripts/connessione');
-var crypto = require('../public/javascripts/security');
+import { Router } from 'express';
+var router = Router();
+import { hashSync } from 'bcrypt';
+import { fixedEncodeURIComponent } from '../public/javascripts/sanitizer.js';
+import getConnection from '../public/javascripts/connessione.js';
+import crypto from '../public/javascripts/security.js';
 
 var options = {
     imglock: '',
@@ -32,19 +32,20 @@ router.route('/')
                     return;
                 }
 
-                var nome = sanitizer.fixedEncodeURIComponent(req.body.nome);
-                var pwd = sanitizer.fixedEncodeURIComponent(req.body.pwd);
+                var nome = fixedEncodeURIComponent(req.body.nome);
+                var pwd = fixedEncodeURIComponent(req.body.pwd);
                 var salt = crypto.salt();
-                var hash = bcrypt.hashSync(pwd, 10);
+                var hash = hashSync(pwd, 10);
                 var sql = 'INSERT INTO utenti VALUES (?, ?, ?, NULL, NULL, NULL)';
                 connection.query(sql, [nome, hash, salt], function (error, results, fields) {
                     if (error) {	//username già in uso
+                        console.log('An error has occurred', error);
                         options.error = true;
                         connection.release();
                         return res.render('signup', options);
                     }
                     else {
-                        var email = sanitizer.fixedEncodeURIComponent(req.body.email);
+                        var email = fixedEncodeURIComponent(req.body.email);
                         sql = 'INSERT INTO sicurezza VALUES	(?, ?, default, NULL)';
                         connection.query(sql, [nome, email], function (error, results, fields) {
                             if (error) {	//email già in uso
@@ -72,4 +73,4 @@ router.route('/')
             return res.redirect('/signup');
     });
 
-module.exports = router;
+export default router;
